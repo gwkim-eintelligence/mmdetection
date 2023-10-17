@@ -96,6 +96,13 @@ def main():
         VideoCapture = ffmpegcv.VideoCapture
     video_origin = VideoCapture(args.video)
 
+    # for frame in video_origin:
+    #     cv2.imshow("dd", frame)
+    #     cv2.waitKey()
+    #
+    # cv2.destroyAllWindows()
+    # return
+
     batch_input_shape = prefetch_batch_input_shape(
         model, (video_origin.width, video_origin.height))
     ori_shape = (video_origin.height, video_origin.width)
