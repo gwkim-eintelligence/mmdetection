@@ -42,6 +42,8 @@ from mmengine.logging import print_log
 
 from mmdet.apis import DetInferencer
 
+import os
+from mylib.json_io import checkStr, readImageFromPath, mkSaveDir
 
 def parse_args():
     parser = ArgumentParser()
@@ -132,5 +134,46 @@ def main():
         print_log(f'results have been saved at {call_args["out_dir"]}')
 
 
+def batch_main():
+    init_args, call_args = parse_args()
+    # print(init_args)
+    # print(call_args)
+
+    image_parent_dir = call_args['inputs']
+    save_parent_dir = call_args['out_dir']
+    image_dir_list = os.listdir(image_parent_dir)
+    # print(image_dir_list)
+    for idx_1, image_dir_1 in enumerate(os.listdir(image_parent_dir)):
+        # print(image_dir_1)
+        if os.path.isdir(os.path.join(image_parent_dir, image_dir_1)) == False:
+            continue
+        for idx_2, image_dir_2 in enumerate(os.listdir(os.path.join(image_parent_dir, image_dir_1))):
+            # print(image_dir_2)
+            target_path = os.path.join(image_parent_dir, image_dir_1, image_dir_2, "rgb")
+            
+            if os.path.isdir(target_path) == True:
+                print("OK ::: ", target_path)
+
+                # save_path = os.path.join(call_args['out_dir'], str(idx_1).zfill(3), str(idx_2).zfill(3))
+                save_path = os.path.join(save_parent_dir, image_dir_1, image_dir_2)
+                print("SAVE ::: ", save_path)
+
+                call_args['inputs'] = target_path
+                call_args['out_dir'] = save_path
+                inferencer = DetInferencer(**init_args)
+                inferencer(**call_args)
+
+                # continue
+                # break
+            else:
+                print("ERROR !!! ", target_path)
+
+
+#     # image_list = readImageFromPath(args.image_path, ".png")
+#     # inferencer = DetInferencer(**init_args)
+#     # inferencer(**call_args)
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    batch_main()

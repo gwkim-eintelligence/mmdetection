@@ -4,6 +4,8 @@ import os.path as osp
 import warnings
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
+import re
+
 import mmcv
 import mmengine
 import numpy as np
@@ -224,6 +226,7 @@ class DetInferencer(BaseInferencer):
                 # as a directory
                 filename_list = list_dir_or_file(
                     inputs, list_dir=False, suffix=IMG_EXTENSIONS)
+                filename_list = sorted(filename_list, key=lambda s: int(re.search(r'\d+', s).group()))
                 inputs = [
                     join_path(inputs, filename) for filename in filename_list
                 ]
